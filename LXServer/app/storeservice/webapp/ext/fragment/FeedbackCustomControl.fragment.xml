@@ -1,0 +1,7 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:custom="storeservice.ext.control"
+>
+    <custom:FeedbackCustomControl />
+</core:FragmentDefinition>
