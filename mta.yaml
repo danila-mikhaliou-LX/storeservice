@@ -1,0 +1,69 @@
+_schema-version: "3.2"
+ID: storeservice
+version: 0.0.1
+modules:
+- name: storeservice-destination-content
+  type: com.sap.application.content
+  requires:
+  - name: storeservice-destination-service
+    parameters:
+      content-target: true
+  - name: storeservice-repo-host
+    parameters:
+      service-key:
+        name: storeservice-repo-host-key
+  - name: storeservice-uaa
+    parameters:
+      service-key:
+        name: storeservice-uaa-key
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: storeservice_html_repo_host
+          ServiceInstanceName: storeservice-html5-service
+          ServiceKeyName: storeservice-repo-host-key
+          sap.cloud.service: storeservice
+        - Authentication: OAuth2UserTokenExchange
+          Name: storeservice_uaa
+          ServiceInstanceName: storeservice-xsuaa-service
+          ServiceKeyName: storeservice-uaa-key
+          sap.cloud.service: storeservice
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+resources:
+- name: storeservice-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: storeservice-destination-service
+    service-plan: lite
+- name: storeservice-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: storeservice-xsuaa-service
+    service-plan: application
+- name: storeservice-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: storeservice-html5-service
+    service-plan: app-host
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
