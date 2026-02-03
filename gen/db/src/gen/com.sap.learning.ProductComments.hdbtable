@@ -1,0 +1,15 @@
+COLUMN TABLE com_sap_learning_ProductComments (
+  ID NVARCHAR(36) NOT NULL,
+  createdAt TIMESTAMP,
+  createdBy NVARCHAR(255),
+  modifiedAt TIMESTAMP,
+  modifiedBy NVARCHAR(255),
+  Author NVARCHAR(45),
+  Message NVARCHAR(2000),
+  Rating INTEGER,
+  Posted DATE,
+  Product_ID NVARCHAR(36),
+  PRIMARY KEY(ID)
+) WITH ASSOCIATIONS (
+  MANY TO ONE JOIN com_sap_learning_Products AS "PRODUCT" ON ("PRODUCT".ID = Product_ID)
+)

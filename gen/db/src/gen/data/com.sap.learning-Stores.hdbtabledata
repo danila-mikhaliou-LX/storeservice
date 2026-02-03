@@ -1,0 +1,37 @@
+{
+  "format_version": 1,
+  "imports": [
+    {
+      "target_table": "COM_SAP_LEARNING_STORES",
+      "source_data": {
+        "data_type": "CSV",
+        "file_name": "com.sap.learning-Stores.csv",
+        "has_header": true,
+        "type_config": {
+          "delimiter": ","
+        }
+      },
+      "import_settings": {
+        "import_columns": [
+          "ID",
+          "NAME",
+          "EMAIL",
+          "PHONENUMBER",
+          "ADDRESS",
+          "ESTABLISHED",
+          "FLOORAREA"
+        ],
+        "include_filter": []
+      },
+      "column_mappings": {
+        "ID": "ID",
+        "NAME": "Name",
+        "EMAIL": "Email",
+        "PHONENUMBER": "PhoneNumber",
+        "ADDRESS": "Address",
+        "ESTABLISHED": "Established",
+        "FLOORAREA": "FloorArea"
+      }
+    }
+  ]
+}

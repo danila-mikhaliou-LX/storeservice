@@ -1,0 +1,16 @@
+VIEW StoreService_Stores AS SELECT
+  Stores_0.ID,
+  Stores_0.createdAt,
+  Stores_0.createdBy,
+  Stores_0.modifiedAt,
+  Stores_0.modifiedBy,
+  Stores_0.Name,
+  Stores_0.Email,
+  Stores_0.PhoneNumber,
+  Stores_0.Address,
+  Stores_0.Established,
+  Stores_0.FloorArea
+FROM com_sap_learning_Stores AS Stores_0
+WITH ASSOCIATIONS (
+  MANY TO MANY JOIN StoreService_Products AS Products ON (Products.Store_ID = ID)
+)

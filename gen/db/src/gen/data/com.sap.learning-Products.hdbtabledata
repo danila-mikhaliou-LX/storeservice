@@ -1,0 +1,47 @@
+{
+  "format_version": 1,
+  "imports": [
+    {
+      "target_table": "COM_SAP_LEARNING_PRODUCTS",
+      "source_data": {
+        "data_type": "CSV",
+        "file_name": "com.sap.learning-Products.csv",
+        "has_header": true,
+        "type_config": {
+          "delimiter": ","
+        }
+      },
+      "import_settings": {
+        "import_columns": [
+          "ID",
+          "NAME",
+          "PRICE_AMOUNT",
+          "PRICE_CURRENCY",
+          "PHOTO",
+          "SPECS",
+          "RATING",
+          "SUPPLIERINFO",
+          "MADEIN",
+          "PRODUCTIONCOMPANYNAME",
+          "STATUS",
+          "STORE_ID"
+        ],
+        "include_filter": []
+      },
+      "column_mappings": {
+        "ID": "ID",
+        "NAME": "Name",
+        "PRICE_AMOUNT": "Price_amount",
+        "PRICE_CURRENCY": "Price_currency",
+        "PHOTO": "Photo",
+        "SPECS": "Specs",
+        "RATING": "Rating",
+        "SUPPLIERINFO": "SupplierInfo",
+        "MADEIN": "MadeIn",
+        "PRODUCTIONCOMPANYNAME": "ProductionCompanyName",
+        "STATUS": "Status",
+        "STORE_ID": "Store_ID"
+      }
+    }
+  ]
+}
