@@ -1,7 +1,0 @@
-COLUMN TABLE com_sap_learning_StoreToProduct (
-  Store_ID NVARCHAR(36),
-  Product_ID NVARCHAR(36)
-) WITH ASSOCIATIONS (
-  MANY TO ONE JOIN com_sap_learning_Stores AS Store ON (Store.ID = Store_ID),
-  MANY TO ONE JOIN com_sap_learning_Products AS "PRODUCT" ON ("PRODUCT".ID = Product_ID)
-)
