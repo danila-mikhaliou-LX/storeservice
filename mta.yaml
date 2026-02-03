@@ -1,69 +1,131 @@
 _schema-version: "3.2"
 ID: storeservice
 version: 0.0.1
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+
 modules:
-- name: storeservice-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: storeservice-destination-service
+  - name: storeservice-srv
+    type: nodejs
+    path: gen/srv
     parameters:
-      content-target: true
-  - name: storeservice-repo-host
+      memory: 1023M
+      disk-quota: 2048M
+    requires:
+      - name: storeservice-db
+      - name: storeservice-uaa
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+
+  - name: storeservice-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: storeservice-destination-service
+        parameters:
+          content-target: true
+      - name: storeservice-repo-host
+        parameters:
+          service-key:
+            name: storeservice-repo-host-key
+      - name: storeservice-uaa
+        parameters:
+          service-key:
+            name: storeservice-uaa-key
     parameters:
-      service-key:
-        name: storeservice-repo-host-key
-  - name: storeservice-uaa
-    parameters:
-      service-key:
-        name: storeservice-uaa-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: storeservice_html_repo_host
-          ServiceInstanceName: storeservice-html5-service
-          ServiceKeyName: storeservice-repo-host-key
-          sap.cloud.service: storeservice
-        - Authentication: OAuth2UserTokenExchange
-          Name: storeservice_uaa
-          ServiceInstanceName: storeservice-xsuaa-service
-          ServiceKeyName: storeservice-uaa-key
-          sap.cloud.service: storeservice
-        existing_destinations_policy: update
-  build-parameters:
-    no-source: true
-resources:
-- name: storeservice-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
+      content:
         instance:
           destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
+            - Name: storeservice_html_repo_host
+              ServiceInstanceName: storeservice-html5-service
+              ServiceKeyName: storeservice-repo-host-key
+              sap.cloud.service: storeservice
+            - Authentication: OAuth2UserTokenExchange
+              Name: storeservice_uaa
+              ServiceInstanceName: storeservice-xsuaa-service
+              ServiceKeyName: storeservice-uaa-key
+              sap.cloud.service: storeservice
           existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: storeservice-destination-service
-    service-plan: lite
-- name: storeservice-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: storeservice-xsuaa-service
-    service-plan: application
-- name: storeservice-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: storeservice-html5-service
-    service-plan: app-host
-parameters:
-  deploy_mode: html5-repo
-  enable-parallel-deployments: true
+    build-parameters:
+      no-source: true
+
+  - name: storeservice-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: storeservice-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - storeservice.zip
+          name: storeservice
+          target-path: resources/
+
+  - name: storeservice
+    type: html5
+    path: app/storeservice
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+
+resources:
+  # --------------------- DESTINATION SERVICE ---------------------
+  - name: storeservice-destination-service
+    type: org.cloudfoundry.managed-service
+    requires:
+      - name: srv-api
+    parameters:
+      service: destination
+      service-name: storeservice-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+              - Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+                Name: srv-api
+                ProxyType: Internet
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+            existing_destinations_policy: update
+
+  # --------------------- XSUAA (SECURITY) ------------------------
+  - name: storeservice-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      service-name: storeservice-xsuaa-service
+      path: ./xs-security.json
+
+  # --------------------- HTML5 REPOSITORY ------------------------
+  - name: storeservice-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: storeservice-html5-service
+      
+  # ----------------------- DB ----------------------------------
+  - name: storeservice-db
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: hana
+      service-plan: hdi-shared

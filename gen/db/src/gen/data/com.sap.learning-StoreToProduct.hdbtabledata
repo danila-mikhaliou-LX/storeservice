@@ -1,0 +1,27 @@
+{
+  "format_version": 1,
+  "imports": [
+    {
+      "target_table": "COM_SAP_LEARNING_STORETOPRODUCT",
+      "source_data": {
+        "data_type": "CSV",
+        "file_name": "com.sap.learning-StoreToProduct.csv",
+        "has_header": true,
+        "type_config": {
+          "delimiter": ","
+        }
+      },
+      "import_settings": {
+        "import_columns": [
+          "STORE_ID",
+          "PRODUCT_ID"
+        ],
+        "include_filter": []
+      },
+      "column_mappings": {
+        "STORE_ID": "Store_ID",
+        "PRODUCT_ID": "Product_ID"
+      }
+    }
+  ]
+}

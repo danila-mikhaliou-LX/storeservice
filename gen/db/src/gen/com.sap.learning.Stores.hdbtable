@@ -1,0 +1,16 @@
+COLUMN TABLE com_sap_learning_Stores (
+  ID NVARCHAR(36) NOT NULL,
+  createdAt TIMESTAMP,
+  createdBy NVARCHAR(255),
+  modifiedAt TIMESTAMP,
+  modifiedBy NVARCHAR(255),
+  Name NVARCHAR(45),
+  Email NVARCHAR(45),
+  PhoneNumber NVARCHAR(45),
+  Address NVARCHAR(100),
+  Established SECONDDATE,
+  FloorArea INTEGER,
+  PRIMARY KEY(ID)
+) WITH ASSOCIATIONS (
+  MANY TO MANY JOIN com_sap_learning_Products AS Products ON (Products.Store_ID = ID)
+)

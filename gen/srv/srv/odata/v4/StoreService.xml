@@ -103,6 +103,73 @@
         <Parameter Name="param" Type="Edm.String"/>
         <ReturnType Type="Edm.String"/>
       </Action>
+      <Annotations Target="StoreService.Stores">
+        <Annotation Term="UI.FieldGroup" Qualifier="GeneratedGroup">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Label" String="Name"/>
+                  <PropertyValue Property="Value" Path="Name"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Label" String="Email"/>
+                  <PropertyValue Property="Value" Path="Email"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Label" String="PhoneNumber"/>
+                  <PropertyValue Property="Value" Path="PhoneNumber"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Label" String="Address"/>
+                  <PropertyValue Property="Value" Path="Address"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Label" String="Established"/>
+                  <PropertyValue Property="Value" Path="Established"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Label" String="FloorArea"/>
+                  <PropertyValue Property="Value" Path="FloorArea"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="ID" String="GeneratedFacet1"/>
+              <PropertyValue Property="Label" String="General Information"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#GeneratedGroup"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Label" String="Name"/>
+              <PropertyValue Property="Value" Path="Name"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Label" String="Email"/>
+              <PropertyValue Property="Value" Path="Email"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Label" String="PhoneNumber"/>
+              <PropertyValue Property="Value" Path="PhoneNumber"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Label" String="Address"/>
+              <PropertyValue Property="Value" Path="Address"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Label" String="Established"/>
+              <PropertyValue Property="Value" Path="Established"/>
+            </Record>
+          </Collection>
+        </Annotation>
+      </Annotations>
       <Annotations Target="StoreService.Stores/ID">
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
       </Annotations>
