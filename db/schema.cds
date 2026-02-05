@@ -12,8 +12,8 @@ entity Stores: cuid, managed{
         Address             : String(100);
         Established         : DateTime;
         FloorArea           : Integer;
-        Products            : Association to many Products
-                                    on Products.Store = $self;
+        Products            : Composition of many Products
+                              on Products.Store = $self
 }
 
 entity Products: cuid, managed {
