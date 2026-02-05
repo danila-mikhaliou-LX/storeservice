@@ -1,6 +1,6 @@
 _schema-version: "3.2"
 ID: storeservice
-version: 0.0.1
+version: 0.0.6
 parameters:
   enable-parallel-deployments: true
   deploy_mode: html5-repo
@@ -10,7 +10,7 @@ modules:
     type: nodejs
     path: gen/srv
     parameters:
-      memory: 1023M
+      memory: 1024M
       disk-quota: 2048M
     requires:
       - name: storeservice-db
