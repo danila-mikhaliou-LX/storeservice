@@ -1,0 +1,21 @@
+COLUMN TABLE StoreService_Stores_drafts (
+  ID NVARCHAR(36) NOT NULL,
+  createdAt TIMESTAMP NULL,
+  createdBy NVARCHAR(255) NULL,
+  modifiedAt TIMESTAMP NULL,
+  modifiedBy NVARCHAR(255) NULL,
+  Name NVARCHAR(45) NULL,
+  Email NVARCHAR(45) NULL,
+  PhoneNumber NVARCHAR(45) NULL,
+  Address NVARCHAR(100) NULL,
+  Established SECONDDATE NULL,
+  FloorArea INTEGER NULL,
+  IsActiveEntity BOOLEAN,
+  HasActiveEntity BOOLEAN,
+  HasDraftEntity BOOLEAN,
+  DraftAdministrativeData_DraftUUID NVARCHAR(36) NOT NULL,
+  PRIMARY KEY(ID)
+) WITH ASSOCIATIONS (
+  MANY TO MANY JOIN StoreService_Products_drafts AS Products ON (Products.Store_ID = ID),
+  MANY TO ONE JOIN StoreService_DraftAdministrativeData AS DraftAdministrativeData ON (DraftAdministrativeData.DraftUUID = DraftAdministrativeData_DraftUUID)
+)

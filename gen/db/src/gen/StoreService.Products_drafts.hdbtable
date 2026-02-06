@@ -1,0 +1,27 @@
+COLUMN TABLE StoreService_Products_drafts (
+  ID NVARCHAR(36) NOT NULL,
+  createdAt TIMESTAMP NULL,
+  createdBy NVARCHAR(255) NULL,
+  modifiedAt TIMESTAMP NULL,
+  modifiedBy NVARCHAR(255) NULL,
+  Name NVARCHAR(45) NULL,
+  Price_amount DECIMAL NULL,
+  Price_currency NVARCHAR(3) NULL DEFAULT 'USD',
+  Photo NVARCHAR(100) NULL,
+  Specs NVARCHAR(2000) NULL,
+  Rating INTEGER NULL,
+  SupplierInfo NVARCHAR(2000) NULL,
+  MadeIn NVARCHAR(45) NULL,
+  ProductionCompanyName NVARCHAR(100) NULL,
+  Status NVARCHAR(100) NULL,
+  Store_ID NVARCHAR(36) NULL,
+  IsActiveEntity BOOLEAN,
+  HasActiveEntity BOOLEAN,
+  HasDraftEntity BOOLEAN,
+  DraftAdministrativeData_DraftUUID NVARCHAR(36) NOT NULL,
+  PRIMARY KEY(ID)
+) WITH ASSOCIATIONS (
+  MANY TO MANY JOIN StoreService_ProductComments AS Comment ON (Comment.Product_ID = ID),
+  MANY TO ONE JOIN StoreService_Stores_drafts AS Store ON (Store.ID = Store_ID),
+  MANY TO ONE JOIN StoreService_DraftAdministrativeData AS DraftAdministrativeData ON (DraftAdministrativeData.DraftUUID = DraftAdministrativeData_DraftUUID)
+)

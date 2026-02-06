@@ -7,6 +7,7 @@
     "applicationVersion": {
       "version": "0.0.1"
     },
+    
     "title": "{{appTitle}}",
     "description": "{{appDescription}}",
     "resources": "resources.json",
@@ -112,7 +113,7 @@
           "target": "ProductsObjectPage"
         }
       ],
-      "targets": {
+       "targets": {
         "StoresList": {
           "type": "Component",
           "id": "StoresList",
@@ -132,9 +133,27 @@
                 "@com.sap.vocabularies.UI.v1.LineItem": {
                   "tableSettings": {
                     "type": "ResponsiveTable"
+                  },
+                  "columns": {
+                    "DataField::Name": {
+                      "width": "20%"
+                    },
+                    "DataField::Address": {
+                      "width": "20%"
+                    },
+                    "DataField::Established": {
+                      "width": "20%"
+                    },
+                    "DataField::Email": {
+                      "width": "20%"
+                    },
+                    "DataField::PhoneNumber": {
+                      "width": "20%"
+                    }
                   }
                 }
-              }
+              },
+              "initialLoad": "Enabled"
             }
           }
         },
@@ -152,6 +171,64 @@
                     "route": "ProductsObjectPage"
                   }
                 }
+              },
+              "sectionLayout": "Page",
+              "controlConfiguration": {
+                "Products/@com.sap.vocabularies.UI.v1.LineItem#Products": {
+                  "columns": {
+                    "DataField::Name": {
+                      "width": "10%"
+                    },
+                    "DataField::Specs": {
+                      "width": "12%"
+                    },
+                    "DataField::SupplierInfo": {
+                      "width": "12%"
+                    },
+                    "DataField::ProductionCompanyName": {
+                      "width": "10%"
+                    },
+                    "DataField::Price_amount": {
+                      "width": "10%"
+                    },
+                    "DataField::Price_currency": {
+                      "width": "10%"
+                    },
+                    "DataField::MadeIn": {
+                      "width": "10%"
+                    },
+                    "DataFieldForAnnotation::DataPoint::Rating": {
+                      "width": "15%"
+                    },
+                    "SpecsCustomColomn": {
+                      "header": "{i18n>specs}",
+                      "width": "12%",
+                      "position": {
+                        "anchor": "DataFieldForAnnotation::DataPoint::Rating",
+                        "placement": "After"
+                      },
+                      "template": "storeservice.ext.fragment.SpecsCustomColomn"
+                    },
+                    "SupplierInfoCustomColomn": {
+                      "header": "{i18n>supplierInfo}",
+                      "width": "12%",
+                      "position": {
+                        "anchor": "SpecsCustomColomn",
+                        "placement": "After"
+                      },
+                      "template": "storeservice.ext.fragment.SupplierInfoCustomColomn"
+                    },
+                    "StatusCustomColomn": {
+                      "header": "{i18n>status}",
+                      "width": "12%",
+                      "position": {
+                        "anchor": "DataFieldForAnnotation::DataPoint::Rating",
+                        "placement": "After"
+                      },
+                      "template": "storeservice.ext.fragment.StatusCustomColomn"
+                    }
+                  }
+                }
               }
             }
           }
@@ -163,7 +240,35 @@
           "options": {
             "settings": {
               "editableHeaderContent": false,
-              "contextPath": "/Stores/Products"
+              "contextPath": "/Stores/Products",
+              "content": {
+                "body": {
+                  "sections": {
+                    "FeedbackCustomControl": {
+                      "template": "storeservice.ext.fragment.FeedbackCustomControl",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "ProductInfo"
+                      },
+                      "title": "{i18n>feedback}"
+                    }
+                  }
+                }
+              },
+              "controlConfiguration": {
+                "@com.sap.vocabularies.UI.v1.FieldGroup#ProductInfo": {
+                  "fields": {
+                    "StatusCustomColomn": {
+                      "template": "storeservice.ext.fragment.StatusCustomColomn",
+                      "position": {
+                        "placement": "After",
+                        "anchor": "DataField::Name"
+                      },
+                      "label": "{i18n>status}"
+                    }
+                  }
+                }
+              }
             }
           }
         }

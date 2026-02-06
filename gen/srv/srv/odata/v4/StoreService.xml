@@ -25,10 +25,12 @@
       <EntityContainer Name="EntityContainer">
         <EntitySet Name="Stores" EntityType="StoreService.Stores">
           <NavigationPropertyBinding Path="Products" Target="Products"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="Stores"/>
         </EntitySet>
         <EntitySet Name="Products" EntityType="StoreService.Products">
           <NavigationPropertyBinding Path="Comment" Target="ProductComments"/>
           <NavigationPropertyBinding Path="Store" Target="Stores"/>
+          <NavigationPropertyBinding Path="SiblingEntity" Target="Products"/>
         </EntitySet>
         <EntitySet Name="ProductComments" EntityType="StoreService.ProductComments">
           <NavigationPropertyBinding Path="Product" Target="Products"/>
@@ -38,6 +40,7 @@
       <EntityType Name="Stores">
         <Key>
           <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
         </Key>
         <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
         <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
@@ -50,11 +53,19 @@
         <Property Name="Address" Type="Edm.String" MaxLength="100"/>
         <Property Name="Established" Type="Edm.DateTimeOffset"/>
         <Property Name="FloorArea" Type="Edm.Int32"/>
-        <NavigationProperty Name="Products" Type="Collection(StoreService.Products)" Partner="Store"/>
+        <NavigationProperty Name="Products" Type="Collection(StoreService.Products)" Partner="Store">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="StoreService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="StoreService.Stores"/>
       </EntityType>
       <EntityType Name="Products">
         <Key>
           <PropertyRef Name="ID"/>
+          <PropertyRef Name="IsActiveEntity"/>
         </Key>
         <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
         <Property Name="createdAt" Type="Edm.DateTimeOffset" Precision="7"/>
@@ -76,6 +87,11 @@
           <ReferentialConstraint Property="Store_ID" ReferencedProperty="ID"/>
         </NavigationProperty>
         <Property Name="Store_ID" Type="Edm.Guid"/>
+        <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+        <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+        <NavigationProperty Name="DraftAdministrativeData" Type="StoreService.DraftAdministrativeData" ContainsTarget="true"/>
+        <NavigationProperty Name="SiblingEntity" Type="StoreService.Products"/>
       </EntityType>
       <EntityType Name="ProductComments">
         <Key>
@@ -95,6 +111,38 @@
         </NavigationProperty>
         <Property Name="Product_ID" Type="Edm.Guid"/>
       </EntityType>
+      <EntityType Name="DraftAdministrativeData">
+        <Key>
+          <PropertyRef Name="DraftUUID"/>
+        </Key>
+        <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="CreatedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+        <Property Name="LastChangeDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+        <Property Name="LastChangedByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+        <Property Name="DraftIsProcessedByMe" Type="Edm.Boolean"/>
+      </EntityType>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="StoreService.Stores"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="StoreService.Stores"/>
+      </Action>
+      <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="StoreService.Products"/>
+        <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+        <ReturnType Type="StoreService.Products"/>
+      </Action>
+      <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="StoreService.Stores"/>
+        <ReturnType Type="StoreService.Stores"/>
+      </Action>
+      <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+        <Parameter Name="in" Type="StoreService.Stores"/>
+        <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+        <ReturnType Type="StoreService.Stores"/>
+      </Action>
       <Function Name="getAverageRating" IsBound="true" IsComposable="false">
         <Parameter Name="in" Type="StoreService.Products"/>
         <ReturnType Type="Edm.Int32"/>
@@ -109,27 +157,27 @@
             <PropertyValue Property="Data">
               <Collection>
                 <Record Type="UI.DataField">
-                  <PropertyValue Property="Label" String="Name"/>
+                  <PropertyValue Property="Label" String="{i18n>name}"/>
                   <PropertyValue Property="Value" Path="Name"/>
                 </Record>
                 <Record Type="UI.DataField">
-                  <PropertyValue Property="Label" String="Email"/>
+                  <PropertyValue Property="Label" String="{i18n>email}"/>
                   <PropertyValue Property="Value" Path="Email"/>
                 </Record>
                 <Record Type="UI.DataField">
-                  <PropertyValue Property="Label" String="PhoneNumber"/>
+                  <PropertyValue Property="Label" String="{i18n>phoneNumber}"/>
                   <PropertyValue Property="Value" Path="PhoneNumber"/>
                 </Record>
                 <Record Type="UI.DataField">
-                  <PropertyValue Property="Label" String="Address"/>
+                  <PropertyValue Property="Label" String="{i18n>Address}"/>
                   <PropertyValue Property="Value" Path="Address"/>
                 </Record>
                 <Record Type="UI.DataField">
-                  <PropertyValue Property="Label" String="Established"/>
+                  <PropertyValue Property="Label" String="{i18n>established}"/>
                   <PropertyValue Property="Value" Path="Established"/>
                 </Record>
                 <Record Type="UI.DataField">
-                  <PropertyValue Property="Label" String="FloorArea"/>
+                  <PropertyValue Property="Label" String="{i18n>floorArea}"/>
                   <PropertyValue Property="Value" Path="FloorArea"/>
                 </Record>
               </Collection>
@@ -140,34 +188,90 @@
           <Collection>
             <Record Type="UI.ReferenceFacet">
               <PropertyValue Property="ID" String="GeneratedFacet1"/>
-              <PropertyValue Property="Label" String="General Information"/>
+              <PropertyValue Property="Label" String="Store Information"/>
               <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#GeneratedGroup"/>
+            </Record>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="Products"/>
+              <PropertyValue Property="ID" String="Products"/>
+              <PropertyValue Property="Target" AnnotationPath="Products/@UI.LineItem#Products"/>
             </Record>
           </Collection>
         </Annotation>
         <Annotation Term="UI.LineItem">
           <Collection>
             <Record Type="UI.DataField">
-              <PropertyValue Property="Label" String="Name"/>
+              <PropertyValue Property="Label" String="{i18n>name}"/>
               <PropertyValue Property="Value" Path="Name"/>
             </Record>
             <Record Type="UI.DataField">
-              <PropertyValue Property="Label" String="Email"/>
+              <PropertyValue Property="Label" String="{i18n>email}"/>
               <PropertyValue Property="Value" Path="Email"/>
             </Record>
             <Record Type="UI.DataField">
-              <PropertyValue Property="Label" String="PhoneNumber"/>
+              <PropertyValue Property="Label" String="{i18n>phoneNumber}"/>
               <PropertyValue Property="Value" Path="PhoneNumber"/>
             </Record>
             <Record Type="UI.DataField">
-              <PropertyValue Property="Label" String="Address"/>
+              <PropertyValue Property="Label" String="{i18n>address}"/>
               <PropertyValue Property="Value" Path="Address"/>
             </Record>
             <Record Type="UI.DataField">
-              <PropertyValue Property="Label" String="Established"/>
+              <PropertyValue Property="Label" String="{i18n>established}"/>
               <PropertyValue Property="Value" Path="Established"/>
             </Record>
           </Collection>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="Title">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="Name"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="TypeName" String="{i18n>store}"/>
+            <PropertyValue Property="TypeNamePlural" String="{i18n>stores}"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderFacets">
+          <Collection/>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="StoreInfo">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Address"/>
+                  <PropertyValue Property="Label" String="{i18n>address}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Email"/>
+                  <PropertyValue Property="Label" String="{i18n>email}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Established"/>
+                  <PropertyValue Property="Label" String="{i18n>established}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="FloorArea"/>
+                  <PropertyValue Property="Label" String="{i18n>floorArea}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="PhoneNumber"/>
+                  <PropertyValue Property="Label" String="{i18n>phoneNumber}"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="StoreService.EntityContainer/Stores">
+        <Annotation Term="Common.DraftRoot">
+          <Record Type="Common.DraftRootType">
+            <PropertyValue Property="ActivationAction" String="StoreService.draftActivate"/>
+            <PropertyValue Property="EditAction" String="StoreService.draftEdit"/>
+            <PropertyValue Property="PreparationAction" String="StoreService.draftPrepare"/>
+          </Record>
         </Annotation>
       </Annotations>
       <Annotations Target="StoreService.Stores/ID">
@@ -209,6 +313,132 @@
       </Annotations>
       <Annotations Target="StoreService.Stores/PhoneNumber">
         <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+      </Annotations>
+      <Annotations Target="StoreService.Stores/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="StoreService.Stores/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="StoreService.Stores/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="StoreService.Stores/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="StoreService.Products">
+        <Annotation Term="UI.HeaderInfo">
+          <Record Type="UI.HeaderInfoType">
+            <PropertyValue Property="Title">
+              <Record Type="UI.DataField">
+                <PropertyValue Property="Value" Path="Name"/>
+              </Record>
+            </PropertyValue>
+            <PropertyValue Property="TypeName" String="{i18n>product}"/>
+            <PropertyValue Property="TypeNamePlural" String="{i18n>products}"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.LineItem" Qualifier="Products">
+          <Collection>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Label" String="{i18n>name}"/>
+              <PropertyValue Property="Value" Path="Name"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+            </Record>
+            <Record Type="UI.DataFieldForAnnotation">
+              <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Rating"/>
+              <PropertyValue Property="Label" String="{i18n>rating}"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="ProductionCompanyName"/>
+              <PropertyValue Property="Label" String="{i18n>productionCompany}"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="Price_amount"/>
+              <PropertyValue Property="Label" String="{i18n>price}"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="Price_currency"/>
+              <PropertyValue Property="Label" String="{i18n>currency}"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+            </Record>
+            <Record Type="UI.DataField">
+              <PropertyValue Property="Value" Path="MadeIn"/>
+              <PropertyValue Property="Label" String="{i18n>madeIn}"/>
+              <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="Rating">
+          <Record Type="UI.DataPointType">
+            <PropertyValue Property="Value" Path="Rating"/>
+            <PropertyValue Property="Visualization" EnumMember="UI.VisualizationType/Rating"/>
+            <PropertyValue Property="TargetValue" Int="5"/>
+          </Record>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+          <Collection>
+            <Record Type="UI.ReferenceFacet">
+              <PropertyValue Property="Label" String="{i18n>productInfo}"/>
+              <PropertyValue Property="ID" String="ProductInfo"/>
+              <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#ProductInfo"/>
+            </Record>
+          </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="ProductInfo">
+          <Record Type="UI.FieldGroupType">
+            <PropertyValue Property="Data">
+              <Collection>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Name"/>
+                  <PropertyValue Property="Label" String="{i18n>name}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Status"/>
+                  <PropertyValue Property="Label" String="{i18n>status}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Price_amount"/>
+                  <PropertyValue Property="Label" String="{i18n>price}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Price_currency"/>
+                  <PropertyValue Property="Label" String="{i18n>currency}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="ProductionCompanyName"/>
+                  <PropertyValue Property="Label" String="{i18n>productionCompany}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Rating"/>
+                  <PropertyValue Property="Label" String="{i18n>rating}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="Specs"/>
+                  <PropertyValue Property="Label" String="{i18n>specs}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="SupplierInfo"/>
+                  <PropertyValue Property="Label" String="{i18n>supplierInfo}"/>
+                </Record>
+                <Record Type="UI.DataField">
+                  <PropertyValue Property="Value" Path="MadeIn"/>
+                  <PropertyValue Property="Label" String="{i18n>madeIn}"/>
+                </Record>
+              </Collection>
+            </PropertyValue>
+          </Record>
+        </Annotation>
+      </Annotations>
+      <Annotations Target="StoreService.EntityContainer/Products">
+        <Annotation Term="Common.DraftNode">
+          <Record Type="Common.DraftNodeType">
+            <PropertyValue Property="PreparationAction" String="StoreService.draftPrepare"/>
+          </Record>
+        </Annotation>
       </Annotations>
       <Annotations Target="StoreService.Products/ID">
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
@@ -254,6 +484,18 @@
       <Annotations Target="StoreService.Products/Store_ID">
         <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
       </Annotations>
+      <Annotations Target="StoreService.Products/IsActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="StoreService.Products/HasActiveEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="StoreService.Products/HasDraftEntity">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
+      <Annotations Target="StoreService.Products/DraftAdministrativeData">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+      </Annotations>
       <Annotations Target="StoreService.ProductComments/ID">
         <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
       </Annotations>
@@ -293,6 +535,37 @@
       </Annotations>
       <Annotations Target="StoreService.ProductComments/Product_ID">
         <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData">
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftAdministrativeData}"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData/DraftUUID">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftUUID}"/>
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData/CreationDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreationDateTime}"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData/CreatedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_CreatedByUser}"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData/DraftIsCreatedByMe">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsCreatedByMe}"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData/LastChangeDateTime">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangeDateTime}"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData/LastChangedByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_LastChangedByUser}"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData/InProcessByUser">
+        <Annotation Term="Common.Label" String="{i18n>Draft_InProcessByUser}"/>
+      </Annotations>
+      <Annotations Target="StoreService.DraftAdministrativeData/DraftIsProcessedByMe">
+        <Annotation Term="UI.Hidden" Bool="true"/>
+        <Annotation Term="Common.Label" String="{i18n>Draft_DraftIsProcessedByMe}"/>
       </Annotations>
     </Schema>
   </edmx:DataServices>

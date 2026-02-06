@@ -1,6 +1,6 @@
 {
   "name": "storeservice",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "Build and deployment scripts",
   "dependencies": {
     "@sap/cds": "^8",

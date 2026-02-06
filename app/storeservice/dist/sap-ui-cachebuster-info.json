@@ -1,10 +1,20 @@
 {
-  "index.html": 1770128269735,
-  "manifest.json": 1770296176523,
+  "formatter/StatusFormatter-dbg.js": 1770297824752,
+  "ext/control/FeedbackCustomControl.js": 1770298026966,
+  "formatter/StatusFormatter.js": 1770297824752,
+  "manifest.json": 1770297766376,
   "Component.js": 1770128269735,
   "Component-dbg.js": 1770128269735,
-  "Component.js.map": 1770296232971,
-  "Component-preload.js": 1770296233039,
-  "Component-preload.js.map": 1770296233039,
-  "i18n/i18n.properties": 1770296176523
+  "Component.js.map": 1770300936094,
+  "i18n/i18n.properties": 1770298058699,
+  "formatter/StatusFormatter.js.map": 1770300936097,
+  "ext/control/FeedbackCustomControl-dbg.js": 1770298026966,
+  "ext/control/FeedbackCustomControl.js.map": 1770300936103,
+  "Component-preload.js": 1770300936182,
+  "Component-preload.js.map": 1770300936182,
+  "ext/fragment/SupplierInfoCustomColomn.fragment.xml": 1770297903477,
+  "ext/fragment/StatusCustomColomn.fragment.xml": 1770297955453,
+  "ext/fragment/SpecsCustomColomn.fragment.xml": 1770297973606,
+  "ext/fragment/FeedbackCustomControl.fragment.xml": 1770297993062,
+  "index.html": 1770128269735
 }

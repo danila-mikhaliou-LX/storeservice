@@ -1,6 +1,6 @@
 _schema-version: "3.2"
 ID: storeservice
-version: 0.0.6
+version: 0.0.7
 parameters:
   enable-parallel-deployments: true
   deploy_mode: html5-repo
