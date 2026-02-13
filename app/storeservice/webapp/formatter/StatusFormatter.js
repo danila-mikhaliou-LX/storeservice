@@ -14,7 +14,6 @@ sap.ui.define(["sap/ui/model/resource/ResourceModel"],
                         return _oResourceBundle.getText("ok");
                     case "STORAGE":
                         return _oResourceBundle.getText("storage");
-
                     default:
                         return _oResourceBundle.getText("none");
                 }
