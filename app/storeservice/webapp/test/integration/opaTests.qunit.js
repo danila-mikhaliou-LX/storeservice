@@ -22,7 +22,8 @@ sap.ui.require(
     "sap/ui/thirdparty/qunit-2",
     "sap/ui/qunit/qunit-junit",
     "sap/ui/qunit/qunit-coverage",
-    'storeservice/test/integration/FirstJourney'
+    'storeservice/test/integration/FirstJourney',
+    'storeservice/test/integration/SearchStore'
   ], function (QUnit) {
     "use strict";
     QUnit.start();
